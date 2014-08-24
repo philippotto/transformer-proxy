@@ -1,11 +1,9 @@
-transformer-proxy
+transformer-proxy [![build status](https://secure.travis-ci.org/philippotto/transformer-proxy.png)](http://travis-ci.org/philippotto/transformer-proxy)
 =================
 
 A middleware component for [node-http-proxy](https://github.com/nodejitsu/node-http-proxy) to transform the response from the proxied server.
 It can be used to transform JavaScript, pictures or any other data.
 If you're looking for an easy solution to modify HTML, have a look at [harmon](https://github.com/No9/harmon) which uses [trumpet](https://github.com/substack/node-trumpet) for modifying HTML.
-AC
-[![build status](https://secure.travis-ci.org/philippotto/transformer-proxy.png)](http://travis-ci.org/philippotto/transformer-proxy)
 
 ## Installation
 
