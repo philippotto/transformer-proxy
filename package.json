@@ -1,0 +1,34 @@
+{
+  "name": "transformer-proxy",
+  "description": "Small middleware for node-http-proxy that allows you to modify the remote service response",
+  "tags": [
+    "http-proxy",
+    "middleware",
+    "streaming"
+  ],
+  "version": "0.1.0",
+  "author": {
+    "name": "Philipp Otto"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/philippotto/transformer-proxy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/philippotto/transformer-proxy/issues"
+  },
+  "dependencies": {
+    "util": "^0.10.3",
+    "stream": "0.0.1"
+  },
+  "devDependencies": {
+    "tap": "0.4.0",
+    "colors": "^0.6.2",
+    "connect": "^2.14.4",
+    "http-proxy": "^1.1.2"
+  },
+  "scripts": {
+    "test": "node test/host.js"
+  },
+  "license": "MIT/X11"
+}
