@@ -35,7 +35,7 @@ When visiting [localhost:3000](http://localhost:3000) you should see:
 ```
 A simple HTML file
 ```
-When visiting [localhost:8013](http://localhost:8013) you should see "A simple HTML file".
+When visiting [localhost:8013](http://localhost:8013) you should see:
 ```
 A simple HTML file
 // an additional line the end of every file
