@@ -6,21 +6,19 @@ var TransformerStream = function (transformerFunction) {
   this.readable = true;
   this.writable = true;
   this.transformerFunction = transformerFunction;
+  this.chunks = [];
 };
 
 util.inherits(TransformerStream, stream);
 
-TransformerStream.prototype._transform = function (data) {
-  data = data ? this.transformerFunction(data.toString()) : "";
-  this.emit("data", data);
-};
-
-TransformerStream.prototype.write = function () {
-  this._transform.apply(this, arguments);
+TransformerStream.prototype.write = function (data) {
+  this.chunks.push(data);
 };
 
 TransformerStream.prototype.end = function () {
-  this._transform.apply(this, arguments);
+  var data = this.transformerFunction(Buffer.concat(this.chunks));
+
+  this.emit("data", data);
   this.emit("end");
 };
 
