@@ -7,7 +7,7 @@ var http = require('http'),
 // The transforming function
 //
 
-var transformerFunction = function(data) {
+var transformerFunction = function(data, req) {
   return data + "\n // an additional line at the end of every file";
 }
 

@@ -2,10 +2,11 @@ var util = require("util");
 var stream = require("stream");
 
 
-var TransformerStream = function (transformerFunction) {
+var TransformerStream = function (transformerFunction, req) {
+  this.transformerFunction = transformerFunction;
+  this.req = req;
   this.readable = true;
   this.writable = true;
-  this.transformerFunction = transformerFunction;
   this.chunks = [];
 };
 
@@ -16,7 +17,7 @@ TransformerStream.prototype.write = function (data) {
 };
 
 TransformerStream.prototype.end = function () {
-  var data = this.transformerFunction(Buffer.concat(this.chunks));
+  var data = this.transformerFunction(Buffer.concat(this.chunks), this.req);
 
   this.emit("data", data);
   this.emit("end");
@@ -38,7 +39,7 @@ module.exports = function transformerProxy(transformerFunction, options) {
       identityOrTransformer = identity;
     }
 
-    var transformerStream = new TransformerStream(identityOrTransformer);
+    var transformerStream = new TransformerStream(identityOrTransformer, req);
 
     var resWrite = res.write.bind(res);
     var resEnd = res.end.bind(res);

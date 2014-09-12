@@ -16,7 +16,7 @@ $ npm install transformer-proxy
 A basic example can be found in ```examples/simple.js```. The quintessence is that you can tell your connect-app to use an own function for transforming all data.
 
 ```javascript
-var transformerFunction = function (data) {
+var transformerFunction = function (data, req) {
   // do something with the data and return it
   return data + "\n // an additional line the end of every file";
 }
