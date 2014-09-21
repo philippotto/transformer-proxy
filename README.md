@@ -49,3 +49,6 @@ For example, if you want to modify only JavaScript files, you could use:
 ```javascript
 transformerProxy(transformerFunction, {match : /\.js([^\w]|$)/})
 ```
+
+## License
+MIT &copy; Philipp Otto 2014
