@@ -31,5 +31,5 @@
   "scripts": {
     "test": "node test/host.js"
   },
-  "license": "MIT/X11"
+  "license": "MIT"
 }
