@@ -13,10 +13,15 @@ var TransformerStream = function (transformerFunction, req) {
 util.inherits(TransformerStream, stream);
 
 TransformerStream.prototype.write = function (data) {
-  this.chunks.push(data);
+  if (data) {
+    this.chunks.push(data);
+  }
 };
 
-TransformerStream.prototype.end = function () {
+TransformerStream.prototype.end = function (data) {
+  if (data) {
+    this.chunks.push(data);
+  }
   var data = this.transformerFunction(Buffer.concat(this.chunks), this.req);
 
   this.emit("data", data);

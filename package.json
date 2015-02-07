@@ -6,7 +6,7 @@
     "middleware",
     "streaming"
   ],
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": {
     "name": "Philipp Otto",
     "email": "philipp.otto@live.com"
