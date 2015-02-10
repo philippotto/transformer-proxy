@@ -11,8 +11,8 @@ test('Streams can change the response size', function (t) {
   var basicHTML = "<html><head></head><body>A simple HTML file</body></html>",
       additionalHTML = "\n // an additional line at the end of every file"
 
-  var transformerFunction = function(data) {
-    return data + additionalHTML;
+  var transformerFunction = function(data, req, callback) {
+    callback(data + additionalHTML);
   }
 
   var proxiedPort = 3000;

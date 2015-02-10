@@ -22,10 +22,11 @@ TransformerStream.prototype.end = function (data) {
   if (data) {
     this.chunks.push(data);
   }
-  var data = this.transformerFunction(Buffer.concat(this.chunks), this.req);
-
-  this.emit("data", data);
-  this.emit("end");
+  self = this;
+  this.transformerFunction(Buffer.concat(this.chunks), this.req, function(data) {
+    self.emit("data", data);
+    self.emit("end");
+  });
 };
 
 
