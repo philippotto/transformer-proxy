@@ -30,7 +30,11 @@ TransformerStream.prototype.end = function (data) {
 };
 
 
-module.exports = function transformerProxy(transformerFunction, options) {
+module.exports = function transformerProxy(transformerFunction, headerFunction, options) {
+
+  if (typeof headerFunction != 'function') {
+    options = headerFunction;
+  }
 
   if (!options) {
     options = {};
@@ -68,9 +72,12 @@ module.exports = function transformerProxy(transformerFunction, options) {
     });
 
     res.writeHead = function (code, headers) {
-        res.removeHeader('Content-Length');
-        if (headers) { delete headers['content-length']; }
-        resWriteHead.apply(null, arguments);
+      res.removeHeader('Content-Length');
+      if (headers) { delete headers['content-length']; }
+      if (typeof headerFunction === 'function') {
+        headerFunction(req, res, headers);
+      }
+      resWriteHead.apply(null, arguments);
     };
 
     next();
