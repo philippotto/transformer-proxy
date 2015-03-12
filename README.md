@@ -50,5 +50,23 @@ For example, if you want to modify only JavaScript files, you could use:
 transformerProxy(transformerFunction, {match : /\.js([^\w]|$)/})
 ```
 
+## Transform response headers
+
+Just pass an options object as the second parameter to ```transformerProxy``` which has a headers attribute.
+Headers attribute is an array of object having name/value attributes. Headers with null value will be removed.
+For example, if you want to modify the content type header and remove server header, you could use:
+
+```javascript
+var headers = [{
+	'name':'content-type',
+	'value':'application/json'
+},{
+	'name':'server',
+	'value':null
+}];
+
+transformerProxy(transformerFunction, {headers : headers})
+```
+
 ## License
 MIT &copy; Philipp Otto 2014
