@@ -19,7 +19,7 @@ A basic example can be found in ```examples/simple.js```. The quintessence is th
 var transformerFunction = function (data, req) {
   // do something with the data and return it
   return data + "\n // an additional line the end of every file";
-}
+};
 app.use(transformerProxy(transformerFunction));
 ```
 
@@ -43,29 +43,29 @@ A simple HTML file
 
 ## Transform only data with a certain URL
 
-Just pass an options object as the second parameter to ```transformerProxy``` which has a match attribute.
+Just pass an options object as the second parameter to ```transformerProxy``` which has a `match` attribute.
 For example, if you want to modify only JavaScript files, you could use:
 
 ```javascript
-transformerProxy(transformerFunction, {match : /\.js([^\w]|$)/})
+transformerProxy(transformerFunction, {match : /\.js([^\w]|$)/});
 ```
 
 ## Transform response headers
 
-Just pass an options object as the second parameter to ```transformerProxy``` which has a headers attribute.
-Headers attribute is an array of object having name/value attributes. Headers with null value will be removed.
-For example, if you want to modify the content type header and remove server header, you could use:
+Just pass an options object as the second parameter to ```transformerProxy``` which has a `headers` attribute.
+This attribute should be an array of objects having name and value attributes. Headers with null values will be removed.
+For example, if you want to modify the content type header and remove the server header, you could use:
 
 ```javascript
 var headers = [{
-	'name':'content-type',
-	'value':'application/json'
-},{
-	'name':'server',
-	'value':null
+  'name' : 'content-type',
+  'value' : 'application/json'
+}, {
+  'name' : 'server',
+  'value' : null
 }];
 
-transformerProxy(transformerFunction, {headers : headers})
+transformerProxy(transformerFunction, {headers : headers});
 ```
 
 ## License

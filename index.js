@@ -62,21 +62,20 @@ module.exports = function transformerProxy(transformerFunction, options) {
     });
 
     res.writeHead = function (code, headers) {
-        res.removeHeader('Content-Length');
+      res.removeHeader('Content-Length');
 
-        if (options.headers && options.headers.length) {
-          for (var i = 0; i<options.headers.length; i++) {
-            var headerValue = options.headers[i].value;
-            if (headerValue) {
-              res.setHeader(options.headers[i].name,options.headers[i].value);
-            } else {
-              res.removeHeader(options.headers[i].name);
-            }
+      if (options.headers) {
+        options.headers.forEach(function(header) {
+          if (header.value) {
+            res.setHeader(header.name, header.value);
+          } else {
+            res.removeHeader(header.name);
           }
-        }
+        });
+      }
 
-        if (headers) { delete headers['content-length']; }
-        resWriteHead.apply(null, arguments);
+      if (headers) { delete headers['content-length']; }
+      resWriteHead.apply(null, arguments);
     };
 
     next();

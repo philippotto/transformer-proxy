@@ -5,18 +5,19 @@ var httpProxy = require('http-proxy');
 var connect = require('connect');
 var transformerProxy = require('../');
 
+var basicHTML = "<html><head></head><body>A simple HTML file</body></html>";
+var proxiedPort = 3000;
+var proxyPort = 8013;
+
 test('Streams can change the response size', function (t) {
   t.plan(1);
 
-  var basicHTML = "<html><head></head><body>A simple HTML file</body></html>",
-      additionalHTML = "\n // an additional line at the end of every file"
+  var additionalHTML = "\n // an additional line at the end of every file";
 
   var transformerFunction = function(data) {
     return data + additionalHTML;
   }
 
-  var proxiedPort = 3000;
-  var proxyPort = 8013;
 
   var app = connect();
   var proxy = httpProxy.createProxyServer({target: 'http://localhost:' + proxiedPort});
@@ -55,29 +56,23 @@ test('Streams can change the response size', function (t) {
 
 
 test('Response headers can be modified', function (t) {
- 
-
-  var basicHTML = "<html><head></head><body>A simple HTML file</body></html>";
 
   var transformerFunction = function(data) {
     return data;
   }
 
-  var proxiedPort = 3000;
-  var proxyPort = 8013;
-
   var app = connect();
   var proxy = httpProxy.createProxyServer({target: 'http://localhost:' + proxiedPort});
 
   var headers = [{
-    'name':'content-type',
-    'value':'text/plain'
-  },{
-    'name':'server',
-    'value':null
-  },{
-    'name':'fooheader',
-    'value':'barHeader'
+    'name' : 'content-type',
+    'value' : 'text/plain'
+  }, {
+    'name' : 'server',
+    'value' : null
+  }, {
+    'name' : 'fooheader',
+    'value' : 'barHeader'
   }];
 
   t.plan(headers.length);
@@ -98,20 +93,17 @@ test('Response headers can be modified', function (t) {
 
 
   http.get('http://localhost:' + proxyPort, function (res) {
-    var str = '';
-
-    for (var i = 0; i<headers.length;i++) {
-      var expectedValue = headers[i].value;
+    headers.forEach(function(header) {
+      var expectedValue = header.value;
       if (expectedValue) {
-        t.equal(res.headers[headers[i].name],headers[i].value);
+        t.equal(res.headers[header.name], expectedValue);
       } else {
-        t.equal(res.headers[headers[i].name],undefined);
+        t.equal(res.headers[header.name], undefined);
       }
-    }
+    });
 
     res.on('data', function (data) {
       console.log("data", data + '');
-      str += data;
     });
 
     res.on('end', function () {
