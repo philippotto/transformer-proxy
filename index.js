@@ -1,10 +1,11 @@
-var util = require("util");
-var stream = require("stream");
+var util = require('util');
+var stream = require('stream');
 
 
-var TransformerStream = function (transformerFunction, req) {
+var TransformerStream = function (transformerFunction, req, res) {
   this.transformerFunction = transformerFunction;
   this.req = req;
+  this.res = res;
   this.readable = true;
   this.writable = true;
   this.chunks = [];
@@ -17,29 +18,26 @@ TransformerStream.prototype.write = function (data) {
 };
 
 TransformerStream.prototype.end = function () {
-  var data = this.transformerFunction(Buffer.concat(this.chunks), this.req);
+  var data = this.transformerFunction(Buffer.concat(this.chunks), this.req, this.res);
 
-  this.emit("data", data);
-  this.emit("end");
+  this.emit('data', data);
+  this.emit('end');
 };
 
 
 module.exports = function transformerProxy(transformerFunction, options) {
+  var identity = function (data) {
+    return data
+  };
 
   if (!options) {
     options = {};
   }
 
-  var identity = function(data) { return data };
-
   return function transformerProxy(req, res, next) {
+    var identityOrTransformer = (options.match && !options.match.test(req.url)) ? identity : transformerFunction;
 
-    var identityOrTransformer = transformerFunction;
-    if (options.match && !options.match.test(req.url)) {
-      identityOrTransformer = identity;
-    }
-
-    var transformerStream = new TransformerStream(identityOrTransformer, req);
+    var transformerStream = new TransformerStream(identityOrTransformer, req, res);
 
     var resWrite = res.write.bind(res);
     var resEnd = res.end.bind(res);
@@ -65,7 +63,7 @@ module.exports = function transformerProxy(transformerFunction, options) {
       res.removeHeader('Content-Length');
 
       if (options.headers) {
-        options.headers.forEach(function(header) {
+        options.headers.forEach(function (header) {
           if (header.value) {
             res.setHeader(header.name, header.value);
           } else {
@@ -74,10 +72,13 @@ module.exports = function transformerProxy(transformerFunction, options) {
         });
       }
 
-      if (headers) { delete headers['content-length']; }
+      if (headers) {
+        delete headers['content-length'];
+      }
+
       resWriteHead.apply(null, arguments);
     };
 
     next();
   }
-}
+};
