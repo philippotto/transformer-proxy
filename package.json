@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "util": "^0.10.3",
-    "stream": "0.0.1"
+    "stream": "0.0.1",
+    "promise": "^7.0.4"
   },
   "devDependencies": {
     "tap": "0.4.0",

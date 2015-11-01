@@ -1,5 +1,8 @@
+'use strict';
+
 var util = require('util');
 var stream = require('stream');
+var Promise = require('promise');
 
 
 var TransformerStream = function (transformerFunction, req, res) {
@@ -18,16 +21,24 @@ TransformerStream.prototype.write = function (data) {
 };
 
 TransformerStream.prototype.end = function () {
+  var self = this;
+  var emit = function(data) {
+    self.emit('data', data);
+    self.emit('end');
+  };
   var data = this.transformerFunction(Buffer.concat(this.chunks), this.req, this.res);
 
-  this.emit('data', data);
-  this.emit('end');
+  if (data.constructor.name === 'Promise') {
+    data.then(emit, emit);
+  } else {
+    emit(data);
+  }
 };
 
 
 module.exports = function transformerProxy(transformerFunction, options) {
   var identity = function (data) {
-    return data
+    return data;
   };
 
   if (!options) {
