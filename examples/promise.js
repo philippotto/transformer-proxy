@@ -3,14 +3,21 @@
 var http = require('http'),
   connect = require('connect'),
   httpProxy = require('http-proxy'),
-  transformerProxy = require('../');
+  transformerProxy = require('../'),
+  Promise = require('promise');
 
 //
 // The transforming function.
 //
 
 var transformerFunction = function (data, req, res) {
-  return data + "\n // an additional line at the end of every file";
+  return new Promise(function(resolve, reject) {
+    http.get('http://google.com/', function(response) {
+      resolve(data + '<br />Google.com request status code: ' + response.statusCode);
+    }).on('error', function(error) {
+      reject(error.message);
+    });
+  });
 };
 
 
