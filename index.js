@@ -23,7 +23,7 @@ TransformerStream.prototype.end = function (data) {
     this.chunks.push(data);
   }
   self = this;
-  this.transformerFunction(Buffer.concat(this.chunks), this.req, function(data) {
+  this.transformerFunction(this.chunks.join(""), this.req, function(data) {
     self.emit("data", data);
     self.emit("end");
   });
