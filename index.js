@@ -12,17 +12,26 @@ var TransformerStream = function (transformerFunction, req, res) {
   this.readable = true;
   this.writable = true;
   this.chunks = [];
+
+  this.on('close', function(){
+    this.closedSkipEnd = true
+  })
 };
 
 util.inherits(TransformerStream, stream);
 
 TransformerStream.prototype.write = function (data) {
-  this.chunks.push(data);
+  this.chunks.push(Buffer.isBuffer(data) ? data : Buffer.from(data));
 };
 
 TransformerStream.prototype.end = function (data) {
+  if (this.closedSkipEnd) {
+    // Do not end and transform the chunks because there was an error reading all of the chunks.
+    // The transform stream was closed because of the request being closed(terminated early).
+    return
+  }
   if (data) {
-    this.chunks.push(data);
+    this.chunks.push(Buffer.isBuffer(data) ? data : Buffer.from(data));
   }
   
   var self = this;
@@ -51,7 +60,6 @@ module.exports = function transformerProxy(transformerFunction, options) {
 
   return function transformerProxy(req, res, next) {
     var identityOrTransformer = (options.match && !options.match.test(req.url)) ? identity : transformerFunction;
-
     var transformerStream = new TransformerStream(identityOrTransformer, req, res);
 
     var resWrite = res.write.bind(res);
@@ -65,6 +73,10 @@ module.exports = function transformerProxy(transformerFunction, options) {
     res.end = function (data, encoding) {
       transformerStream.end(data, encoding);
     };
+
+    res.on('close', function () {
+      transformerStream.emit('close');
+    });
 
     transformerStream.on('data', function (buf) {
       resWrite(buf);
